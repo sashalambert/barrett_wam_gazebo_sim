@@ -1,0 +1,136 @@
+<?xml version="1.0" ?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="wam">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="wam_arm">
+        <chain base_link="wam/base_link" tip_link="wam/wrist_palm_link" />
+    </group>
+    <group name="barrett_hand">
+        <link name="wam/bhand/bhand_palm_link" />
+        <link name="wam/bhand/bhand_grasp_link" />
+        <link name="wam/bhand/bhand_palm_surface_link" />
+        <link name="wam/bhand/finger_1/prox_link" />
+        <link name="wam/bhand/finger_1/med_link" />
+        <link name="wam/bhand/finger_1/dist_link" />
+        <link name="wam/bhand/finger_1/tip_link" />
+        <link name="wam/bhand/finger_2/prox_link" />
+        <link name="wam/bhand/finger_2/med_link" />
+        <link name="wam/bhand/finger_2/dist_link" />
+        <link name="wam/bhand/finger_2/tip_link" />
+        <link name="wam/bhand/finger_3/med_link" />
+        <link name="wam/bhand/finger_3/dist_link" />
+        <link name="wam/bhand/finger_3/tip_link" />
+        <link name="wam/wrist_palm_stump_link" />
+    </group>
+    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+    <end_effector name="hand_eef" parent_link="wam/wrist_palm_link" group="barrett_hand" />
+    <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
+    <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="wam/base_link" />
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="wam/base_link" link2="wam/bhand/bhand_grasp_link" reason="Never" />
+    <disable_collisions link1="wam/base_link" link2="wam/shoulder_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/base_link" link2="wam/shoulder_yaw_link" reason="Adjacent" />
+    <disable_collisions link1="wam/base_link" link2="wam/upper_arm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/bhand/bhand_palm_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/bhand/finger_1/dist_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/bhand/finger_1/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/bhand/finger_1/prox_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/bhand/finger_2/dist_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/bhand/finger_2/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/bhand/finger_2/prox_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/bhand/finger_3/dist_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/bhand/finger_3/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/shoulder_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/shoulder_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/upper_arm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_grasp_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/bhand/finger_1/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/bhand/finger_1/prox_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/bhand/finger_2/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/bhand/finger_2/prox_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/bhand/finger_3/dist_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/bhand/finger_3/med_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/wrist_palm_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/wrist_pitch_link" reason="Default" />
+    <disable_collisions link1="wam/bhand/bhand_palm_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/dist_link" link2="wam/bhand/finger_1/med_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/finger_1/dist_link" link2="wam/bhand/finger_1/prox_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/dist_link" link2="wam/bhand/finger_2/prox_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/dist_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/dist_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/dist_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/dist_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/med_link" link2="wam/bhand/finger_1/prox_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/finger_1/med_link" link2="wam/bhand/finger_2/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/med_link" link2="wam/bhand/finger_2/prox_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/med_link" link2="wam/bhand/finger_3/dist_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/med_link" link2="wam/bhand/finger_3/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/med_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/med_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/med_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/med_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/prox_link" link2="wam/bhand/finger_2/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/prox_link" link2="wam/bhand/finger_2/prox_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/prox_link" link2="wam/bhand/finger_3/dist_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/prox_link" link2="wam/bhand/finger_3/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/prox_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/prox_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/prox_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_1/prox_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/dist_link" link2="wam/bhand/finger_2/med_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/finger_2/dist_link" link2="wam/bhand/finger_2/prox_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/dist_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/dist_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/dist_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/dist_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/med_link" link2="wam/bhand/finger_2/prox_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/finger_2/med_link" link2="wam/bhand/finger_3/dist_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/med_link" link2="wam/bhand/finger_3/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/med_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/med_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/med_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/med_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/prox_link" link2="wam/bhand/finger_3/dist_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/prox_link" link2="wam/bhand/finger_3/med_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/prox_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/prox_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/prox_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_2/prox_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_3/dist_link" link2="wam/bhand/finger_3/med_link" reason="Adjacent" />
+    <disable_collisions link1="wam/bhand/finger_3/dist_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_3/dist_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_3/dist_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_3/dist_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_3/med_link" link2="wam/forearm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_3/med_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_3/med_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/bhand/finger_3/med_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/forearm_link" link2="wam/shoulder_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/forearm_link" link2="wam/shoulder_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/forearm_link" link2="wam/upper_arm_link" reason="Adjacent" />
+    <disable_collisions link1="wam/forearm_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/forearm_link" link2="wam/wrist_pitch_link" reason="Default" />
+    <disable_collisions link1="wam/forearm_link" link2="wam/wrist_yaw_link" reason="Adjacent" />
+    <disable_collisions link1="wam/shoulder_pitch_link" link2="wam/shoulder_yaw_link" reason="Adjacent" />
+    <disable_collisions link1="wam/shoulder_pitch_link" link2="wam/upper_arm_link" reason="Adjacent" />
+    <disable_collisions link1="wam/shoulder_pitch_link" link2="wam/wrist_palm_link" reason="Never" />
+    <disable_collisions link1="wam/shoulder_pitch_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/shoulder_pitch_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/shoulder_yaw_link" link2="wam/wrist_pitch_link" reason="Never" />
+    <disable_collisions link1="wam/shoulder_yaw_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/upper_arm_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/wrist_palm_link" link2="wam/wrist_pitch_link" reason="Adjacent" />
+    <disable_collisions link1="wam/wrist_palm_link" link2="wam/wrist_yaw_link" reason="Never" />
+    <disable_collisions link1="wam/wrist_pitch_link" link2="wam/wrist_yaw_link" reason="Adjacent" />
+</robot>

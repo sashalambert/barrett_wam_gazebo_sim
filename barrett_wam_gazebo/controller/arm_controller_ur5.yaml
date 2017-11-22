@@ -1,0 +1,23 @@
+arm_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+     - wam/base_yaw_joint
+     - wam/shoulder_pitch_joint
+     - wam/shoulder_yaw_joint
+     - wam/elbow_pitch_joint
+     - wam/wrist_yaw_joint
+     - wam/wrist_pitch_joint
+     - wam/palm_yaw_joint
+  constraints:
+      goal_time: 0.6
+      stopped_velocity_tolerance: 0.05
+      wam/base_yaw_joint: {trajectory: 0.1, goal: 0.1}
+      wam/shoulder_pitch_joint: {trajectory: 0.1, goal: 0.1}
+      wam/shoulder_yaw_joint: {trajectory: 0.1, goal: 0.1}
+      wam/elbow_pitch_joint: {trajectory: 0.1, goal: 0.1}
+      wam/wrist_yaw_joint: {trajectory: 0.1, goal: 0.1}
+      wam/wrist_pitch_joint: {trajectory: 0.1, goal: 0.1}
+      wam/palm_yaw_joint: {trajectory: 0.1, goal: 0.1}
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
