@@ -12,8 +12,20 @@
   <node pkg="rostopic" type="rostopic" name="fake_joint_calibration" ns="wam"
         args="pub /calibrated std_msgs/Bool true" />
   
-  <!-- joint_state_controller -->
+  <!-- Load joint controller configurations -->
   <rosparam file="$(find barrett_wam_gazebo)/controller/joint_state_controller.yaml" ns="wam" command="load"/>
-  <node name="r" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller" ns="wam" respawn="false" output="screen"/>
-  
+
+
+  <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller" ns="wam" respawn="false" output="screen"/>
+ 
+<!--   <node name="joint_effort_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn 
+    base_yaw_joint_position_controller 
+    shoulder_pitch_joint_position_controller
+    shoulder_yaw_joint_position_controller
+    elbow_pitch_joint_position_controller
+    wrist_yaw_joint_position_controller
+    wrist_pitch_joint_position_controller
+    palm_yaw_joint_position_controller
+    " ns="wam" respawn="false" output="screen"/>
+ -->
 </launch>

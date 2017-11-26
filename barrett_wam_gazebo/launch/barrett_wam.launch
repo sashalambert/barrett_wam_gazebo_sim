@@ -16,14 +16,12 @@
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 0.1" respawn="false" output="screen" />
 
+  <rosparam file="$(find barrett_wam_gazebo)/controller/arm_controller_wam.yaml" ns="wam" command="load"/>
 
 <!-- launches joint state publisher, controller topics -->
   <include file="$(find barrett_wam_gazebo)/launch/controller_utils.launch"/>
 
 <!-- launch another controller_manager for joint trajectory controller -->
-  <rosparam file="$(find barrett_wam_gazebo)/controller/arm_controller_wam.yaml" ns="wam" command="load"/>
   <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" ns="wam" args="spawn arm_controller" respawn="false" output="screen"/>
-
-  <!-- <node name="hand_controller_spawner" pkg="controller_manager" type="controller_manager" ns="wam" args="spawn hand_controller" respawn="false" output="screen"/> -->
 
 </launch>
