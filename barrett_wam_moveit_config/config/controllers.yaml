@@ -10,13 +10,14 @@ controller_list:
       - wam/wrist_yaw_joint
       - wam/wrist_pitch_joint
       - wam/palm_yaw_joint
-  - name: fake_hand_controller
-    joints:
-      - wam/bhand/finger_1/prox_joint
-      - wam/bhand/finger_1/med_joint
-      - wam/bhand/finger_1/dist_joint
-      - wam/bhand/finger_2/prox_joint
-      - wam/bhand/finger_2/med_joint
-      - wam/bhand/finger_2/dist_joint
-      - wam/bhand/finger_3/med_joint
-      - wam/bhand/finger_3/dist_joint
+  # - name: fake_hand_controller
+  #   type: interpolate
+  #   joints:
+  #     - wam/bhand/finger_1/prox_joint
+  #     - wam/bhand/finger_1/med_joint
+  #     - wam/bhand/finger_1/dist_joint
+  #     - wam/bhand/finger_2/prox_joint
+  #     - wam/bhand/finger_2/med_joint
+  #     - wam/bhand/finger_2/dist_joint
+  #     - wam/bhand/finger_3/med_joint
+  #     - wam/bhand/finger_3/dist_joint
