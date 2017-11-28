@@ -4,7 +4,7 @@
   <arg name="gui" default="true"/>
 
   <!--  Load effort-based controllers -->
-  <arg name="effort" default="false"/>
+  <arg name="effort" default="true"/>
   
   <!-- startup simulated world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

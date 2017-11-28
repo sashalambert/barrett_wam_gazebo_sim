@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /MotionPlanning1
         - /MotionPlanning1/Planning Request1
+        - /MarkerArray1
       Splitter Ratio: 0.742560029
     Tree Height: 332
   - Class: rviz/Help
@@ -341,6 +342,27 @@ Visualization Manager:
         Show Robot Collision: false
         Show Robot Visual: true
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /rviz_visual_tools
+      Name: MarkerArray
+      Namespaces:
+        Arrow: true
+        Cylinder: true
+        Sphere: true
+        Text: true
+        goal: true
+        goal1: true
+        goal2: true
+        pose1: true
+        pose2: true
+        pt0: true
+        pt1: true
+        pt2: true
+        pt3: true
+        start: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -356,7 +378,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 4.14924479
+      Distance: 5.813622
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -371,10 +393,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.509796977
+      Pitch: 0.174797073
       Target Frame: world
       Value: XYOrbit (rviz)
-      Yaw: 5.65994978
+      Yaw: 4.54994917
     Saved: ~
 Window Geometry:
   Displays:

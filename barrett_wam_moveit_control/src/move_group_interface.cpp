@@ -71,8 +71,8 @@ int main(int argc, char **argv)
   joint_group_positions[0] = 0.0;
   joint_group_positions[1] = -M_PI/2;
   joint_group_positions[2] = 0.0;
-  joint_group_positions[3] = 0.0; 
-  // joint_group_positions[3] = M_PI/2; 
+  // joint_group_positions[3] = 0.0; 
+  joint_group_positions[3] = M_PI/2; 
   joint_group_positions[4] = 0.0;
   joint_group_positions[5] = 0.0;
   joint_group_positions[6] = 0.0;
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
   success = move_group.plan(my_plan);
   move_group.execute(my_plan);
 
-  ros::Duration(5.0).sleep();
+  ros::Duration(1.0).sleep();
 
 #endif
 
@@ -114,6 +114,8 @@ int main(int argc, char **argv)
 
   move_group.setJointValueTarget(joint_group_start);
   success = move_group.plan(my_plan);
+  visual_tools.publishTrajectoryLine(my_plan.trajectory_, joint_model_group);
+  visual_tools.trigger();
   move_group.execute(my_plan);
 
   /*----------------------------------------------------------------------------------------------*/
@@ -126,11 +128,18 @@ int main(int argc, char **argv)
 
   //  Read 2D coordinates of trajectory
   std::string traj_fn = "/home/sasha/catkin_kinetic_ws/src/barrett_wam_gazebo_sim/barrett_wam_moveit_control/scripts/trajectories/cart_path_ellipse_n_100.csv";
+  // std::string traj_fn = "/home/sasha/catkin_kinetic_ws/src/barrett_wam_gazebo_sim/barrett_wam_moveit_control/scripts/trajectories/cart_path_ellipse_n_200.csv";
+  // std::string traj_fn = "/home/sasha/catkin_kinetic_ws/src/barrett_wam_gazebo_sim/barrett_wam_moveit_control/scripts/trajectories/cart_path_ellipse_n_25.csv";
   std::vector<std::vector<float>> pos;
   readTrajFile(&pos, traj_fn);
 
-  double scaling_fact=0.2;
-  int n_loops = 1;
+  double scaling_fact=0.4;
+  int n_loops = 3;
+  std::vector<double> offset = {0.1,0.0,0.4};
+
+  current_pose.position.x += offset[0];
+  current_pose.position.y += offset[1];
+  current_pose.position.z += offset[2];
 
   for (int l=0; l<n_loops; l++) {
     for (int pt=0; pt<pos.size()-1; pt++){
@@ -140,7 +149,7 @@ int main(int argc, char **argv)
       target_pose.position.y += pos[pt][0]*scaling_fact;
       target_pose.position.z += pos[pt][1]*scaling_fact;
 
-      ROS_INFO("point y: %5.3f, z: %5.3f",pos[pt][0],pos[pt][1]);
+      // ROS_INFO("point y: %5.3f, z: %5.3f",pos[pt][0],pos[pt][1]);
       waypoints.push_back(target_pose); 
     }
   }
@@ -165,6 +174,7 @@ int main(int argc, char **argv)
   const double jump_threshold = 0.0;
   // Step size of at most eef_step meters between end effector configurations of consecutive points.
   const double eef_step = 0.01;
+  // const double eef_step = 0.1;
   double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
   ROS_INFO_NAMED("tutorial", "Visualizing plan (cartesian path) (%.2f%% acheived)", fraction * 100.0);
 
