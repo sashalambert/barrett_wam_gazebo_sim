@@ -195,13 +195,13 @@ Visualization Manager:
         Show Weight Limit: false
         TextHeight: 0.0799999982
       Planning Request:
-        Colliding Link Color: 255; 0; 0
+        Colliding Link Color: 170; 0; 127
         Goal State Alpha: 1
         Goal State Color: 250; 128; 0
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
         Planning Group: wam_arm
-        Query Goal State: true
+        Query Goal State: false
         Query Start State: false
         Show Workspace: false
         Start State Alpha: 1
@@ -356,7 +356,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 4.20986652
+      Distance: 4.14924479
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -392,5 +392,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1828
-  X: 92
-  Y: 24
+  X: 1932
+  Y: 25

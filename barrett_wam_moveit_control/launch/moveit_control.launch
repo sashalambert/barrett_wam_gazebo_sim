@@ -1,5 +1,5 @@
 <launch>
 
-  <node name="move_group_interface" pkg="barrett_wam_moveit_control" type="move_group_interface" ns="wam"/>
+  <node name="move_group_interface" pkg="barrett_wam_moveit_control" type="move_group_interface" output="screen" ns="wam"/>
 
 </launch>

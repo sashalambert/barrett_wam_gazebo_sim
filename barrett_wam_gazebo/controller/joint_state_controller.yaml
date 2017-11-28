@@ -4,31 +4,31 @@ joint_state_controller:
     publish_rate: 50  
 
 # Position Controllers (used with EffortJointInterface transmission )
-base_yaw_joint_position_controller:
-  type: effort_controllers/JointPositionController
-  joint: wam/base_yaw_joint
-  pid: {p: 100.0, i: 0.01, d: 10.0}
-shoulder_pitch_joint_position_controller:
-  type: effort_controllers/JointPositionController
-  joint: wam/shoulder_pitch_joint
-  pid: {p: 100.0, i: 0.01, d: 10.0}
-shoulder_yaw_joint_position_controller:
-  type: effort_controllers/JointPositionController
-  joint: wam/shoulder_yaw_joint
-  pid: {p: 100.0, i: 0.01, d: 10.0}
-elbow_pitch_joint_position_controller:
-  type: effort_controllers/JointPositionController
-  joint: wam/elbow_pitch_joint
-  pid: {p: 100.0, i: 0.01, d: 10.0}
-wrist_yaw_joint_position_controller:
-  type: effort_controllers/JointPositionController
-  joint: wam/wrist_yaw_joint
-  pid: {p: 100.0, i: 0.01, d: 10.0}
-wrist_pitch_joint_position_controller:
-  type: effort_controllers/JointPositionController
-  joint: wam/wrist_pitch_joint
-  pid: {p: 100.0, i: 0.01, d: 10.0}
-palm_yaw_joint_position_controller:
-  type: effort_controllers/JointPositionController
-  joint: wam/palm_yaw_joint
-  pid: {p: 100.0, i: 0.01, d: 10.0}
+# base_yaw_joint_position_controller:
+#   type: effort_controllers/JointPositionController
+#   joint: wam/base_yaw_joint
+#   pid: {p: 100.0, i: 0.01, d: 10.0}
+# shoulder_pitch_joint_position_controller:
+#   type: effort_controllers/JointPositionController
+#   joint: wam/shoulder_pitch_joint
+#   pid: {p: 100.0, i: 0.01, d: 10.0}
+# shoulder_yaw_joint_position_controller:
+#   type: effort_controllers/JointPositionController
+#   joint: wam/shoulder_yaw_joint
+#   pid: {p: 100.0, i: 0.01, d: 10.0}
+# elbow_pitch_joint_position_controller:
+#   type: effort_controllers/JointPositionController
+#   joint: wam/elbow_pitch_joint
+#   pid: {p: 100.0, i: 0.01, d: 10.0}
+# wrist_yaw_joint_position_controller:
+#   type: effort_controllers/JointPositionController
+#   joint: wam/wrist_yaw_joint
+#   pid: {p: 100.0, i: 0.01, d: 10.0}
+# wrist_pitch_joint_position_controller:
+#   type: effort_controllers/JointPositionController
+#   joint: wam/wrist_pitch_joint
+#   pid: {p: 100.0, i: 0.01, d: 10.0}
+# palm_yaw_joint_position_controller:
+#   type: effort_controllers/JointPositionController
+#   joint: wam/palm_yaw_joint
+#   pid: {p: 100.0, i: 0.01, d: 10.0}

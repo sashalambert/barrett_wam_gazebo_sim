@@ -2,6 +2,9 @@
 <launch>
   <arg name="paused" default="false"/>
   <arg name="gui" default="true"/>
+
+  <!--  Load effort-based controllers -->
+  <arg name="effort" default="false"/>
   
   <!-- startup simulated world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -11,15 +14,19 @@
   </include>
 
   <!-- send robot urdf to param server -->
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find barrett_model)/robots/wam_7dof_wam_bhand.urdf.xacro'" />
+  <param if="$(arg effort)" name="robot_description" command="$(find xacro)/xacro --inorder '$(find barrett_model)/robots/wam_7dof_wam_bhand_effort.urdf.xacro' " />
+  <param unless="$(arg effort)" name="robot_description" command="$(find xacro)/xacro --inorder '$(find barrett_model)/robots/wam_7dof_wam_bhand_position.urdf.xacro' " />
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 0.1" respawn="false" output="screen" />
 
-  <rosparam file="$(find barrett_wam_gazebo)/controller/arm_controller_wam.yaml" ns="wam" command="load"/>
+  <!-- load appropriate arm trajectory controller -->
+  <rosparam if="$(arg effort)" file="$(find barrett_wam_gazebo)/controller/arm_controller_wam_effort.yaml" ns="wam" command="load"/>
+  <rosparam unless="$(arg effort)" file="$(find barrett_wam_gazebo)/controller/arm_controller_wam_position.yaml" ns="wam" command="load"/>
+
 
 <!-- launches joint state publisher, controller topics -->
-  <include file="$(find barrett_wam_gazebo)/launch/controller_utils.launch"/>
+  <include  file="$(find barrett_wam_gazebo)/launch/controller_utils.launch"/>
 
 <!-- launch another controller_manager for joint trajectory controller -->
   <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" ns="wam" args="spawn arm_controller" respawn="false" output="screen"/>

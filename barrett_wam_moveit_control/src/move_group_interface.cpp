@@ -1,4 +1,5 @@
 #include <math.h>
+#include <fstream>
 
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
@@ -11,8 +12,32 @@
 
 #include <moveit_visual_tools/moveit_visual_tools.h>
 
+// #define HOME
 #define CARTESIAN
 // #define RANDOM
+
+void readTrajFile(  std::vector<std::vector<float>> * coord, std::string path) 
+{
+
+  std::ifstream file(path, std::ios::in);
+  std::string line; 
+
+  while( std::getline( file, line ) )
+  {
+    std::istringstream iss( line );
+    std::string result;
+    std::vector<float> p;
+    while( std::getline( iss, result, ',' ) )
+      {
+        p.push_back(atof( result.c_str() ));
+      }
+    // ROS_INFO("%5.3f  %5.3f", p[0], p[1]);
+    coord->push_back(p);
+  }
+
+  file.close();
+}
+
 
 int main(int argc, char **argv)
 {
@@ -33,7 +58,10 @@ int main(int argc, char **argv)
   ROS_INFO_NAMED("move_group_interface", "End effector link: %s", move_group.getEndEffectorLink().c_str());
 
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+  bool success;
 
+
+#ifdef HOME
   /*----------------------------------------------------------------------------------------------*/
   // MOVE TO HOME POSITION
 
@@ -42,8 +70,9 @@ int main(int argc, char **argv)
   current_state->copyJointGroupPositions(joint_model_group, joint_group_positions);
   joint_group_positions[0] = 0.0;
   joint_group_positions[1] = -M_PI/2;
-  joint_group_positions[2] = 0;
-  joint_group_positions[3] = M_PI/2; 
+  joint_group_positions[2] = 0.0;
+  joint_group_positions[3] = 0.0; 
+  // joint_group_positions[3] = M_PI/2; 
   joint_group_positions[4] = 0.0;
   joint_group_positions[5] = 0.0;
   joint_group_positions[6] = 0.0;
@@ -51,10 +80,12 @@ int main(int argc, char **argv)
   // move_group.setMaxVelocityScalingFactor(0.1);
 
   move_group.setJointValueTarget(joint_group_positions);
-  bool success = move_group.plan(my_plan);
+  success = move_group.plan(my_plan);
   move_group.execute(my_plan);
 
-  // ros::Duration(5.0).sleep();
+  ros::Duration(5.0).sleep();
+
+#endif
 
 #ifdef CARTESIAN
   /*----------------------------------------------------------------------------------------------*/
@@ -66,38 +97,60 @@ int main(int argc, char **argv)
   moveit_visual_tools::MoveItVisualTools visual_tools("odom_combined");
   visual_tools.deleteAllMarkers();
 
+  /*----------------------------------------------------------------------------------------------*/
+  // Start at at pre-set pose
+
+  moveit::core::RobotStatePtr state = move_group.getCurrentState();
+  std::vector<double> joint_group_start;
+  state->copyJointGroupPositions(joint_model_group, joint_group_start);
+
+  joint_group_start[0] = 0.5656109446;
+  joint_group_start[1] = -1.4139894723;
+  joint_group_start[2] = 1.8147345939;
+  joint_group_start[3] = 1.7912691745;
+  joint_group_start[4] = -3.1911434401;
+  joint_group_start[5] = 1.1331839406;
+  joint_group_start[6] = -0.3702485934;
+
+  move_group.setJointValueTarget(joint_group_start);
+  success = move_group.plan(my_plan);
+  move_group.execute(my_plan);
+
+  /*----------------------------------------------------------------------------------------------*/
+
   // Current end-eff pose
   geometry_msgs::Pose current_pose = move_group.getCurrentPose().pose;
 
   std::vector<geometry_msgs::Pose> waypoints;
   waypoints.push_back(current_pose);
 
-  double dist=0.1;
+  //  Read 2D coordinates of trajectory
+  std::string traj_fn = "/home/sasha/catkin_kinetic_ws/src/barrett_wam_gazebo_sim/barrett_wam_moveit_control/scripts/trajectories/cart_path_ellipse_n_100.csv";
+  std::vector<std::vector<float>> pos;
+  readTrajFile(&pos, traj_fn);
 
-  geometry_msgs::Pose target_pose = current_pose;
-  target_pose.position.x += dist;
-  waypoints.push_back(target_pose);  
+  double scaling_fact=0.2;
+  int n_loops = 1;
 
-  target_pose.position.x -= dist;
-  target_pose.position.y += dist;
-  waypoints.push_back(target_pose); 
+  for (int l=0; l<n_loops; l++) {
+    for (int pt=0; pt<pos.size()-1; pt++){
 
-  target_pose.position.y -= dist;
-  target_pose.position.x -= dist;
-  waypoints.push_back(target_pose); 
+      // Read as y-z coordinates, current pose as origin.
+      geometry_msgs::Pose target_pose = current_pose;
+      target_pose.position.y += pos[pt][0]*scaling_fact;
+      target_pose.position.z += pos[pt][1]*scaling_fact;
 
-  target_pose.position.x += dist;
-  target_pose.position.y -= dist;
-  waypoints.push_back(target_pose); 
-
-  target_pose.position.y += dist;
-  waypoints.push_back(target_pose); 
+      ROS_INFO("point y: %5.3f, z: %5.3f",pos[pt][0],pos[pt][1]);
+      waypoints.push_back(target_pose); 
+    }
+  }
 
 
   // Cartesian motions are frequently needed to be slower for actions such as approach and retreat
   // grasp motions. Here we demonstrate how to reduce the speed of the robot arm via a scaling factor
   // of the maxiumum speed of each joint. Note this is not the speed of the end effector point.
-  move_group.setMaxVelocityScalingFactor(0.1);
+  
+  // move_group.setMaxVelocityScalingFactor(0.1);
 
 
     // We want the cartesian path to be interpolated at a resolution of 1 cm
@@ -106,7 +159,11 @@ int main(int argc, char **argv)
   // Warning - disabling the jump threshold while operating real hardware can cause
   // large unpredictable motions of redundant joints and could be a safety issue
   moveit_msgs::RobotTrajectory trajectory;
+
+  // No more than jump_threshold is allowed as change in distance in the configuration space of 
+  // the robot (this is to prevent 'jumps' in IK solutions)
   const double jump_threshold = 0.0;
+  // Step size of at most eef_step meters between end effector configurations of consecutive points.
   const double eef_step = 0.01;
   double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
   ROS_INFO_NAMED("tutorial", "Visualizing plan (cartesian path) (%.2f%% acheived)", fraction * 100.0);
