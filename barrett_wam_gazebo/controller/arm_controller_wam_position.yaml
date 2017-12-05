@@ -22,9 +22,10 @@ arm_controller:
   constraints:
       goal_time: 0.6
       stopped_velocity_tolerance: 0.1  # Velocity to be considered approximately equal to zero 
-      shoulder_pan_joint: {trajectory: 0.1, goal: 0.1}
-      shoulder_lift_joint: {trajectory: 0.1, goal: 0.1}
-      elbow_joint: {trajectory: 0.1, goal: 0.1}
-      wrist_1_joint: {trajectory: 0.1, goal: 0.1}
-      wrist_2_joint: {trajectory: 0.1, goal: 0.1}
-      wrist_3_joint: {trajectory: 0.1, goal: 0.1}
+      wam/base_yaw_joint: {trajectory: 0.1, goal: 0.1}
+      wam/shoulder_pitch_joint: {trajectory: 0.1, goal: 0.1}
+      wam/shoulder_yaw_joint: {trajectory: 0.1, goal: 0.1}
+      wam/elbow_pitch_joint: {trajectory: 0.1, goal: 0.1}
+      wam/wrist_yaw_joint: {trajectory: 0.1, goal: 0.1}
+      wam/wrist_pitch_joint: {trajectory: 0.1, goal: 0.1}
+      wam/palm_yaw_joint: {trajectory: 0.1, goal: 0.1}
