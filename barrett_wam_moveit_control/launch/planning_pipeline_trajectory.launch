@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="planning_pipeline_trajectory" pkg="barrett_wam_moveit_control" type="planning_pipeline_trajectory" output="screen" ns="wam"/>
+
+</launch>

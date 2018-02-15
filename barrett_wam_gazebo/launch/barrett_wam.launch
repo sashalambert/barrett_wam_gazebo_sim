@@ -9,8 +9,8 @@
   <!-- <arg name="ctrl_mode" default="effort"/> -->
   
   <!-- startup simulated world -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" default="worlds/empty.world"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch"
+>    <arg name="world_name" default="worlds/empty.world"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="gui" value="$(arg gui)"/>
   </include>
@@ -19,7 +19,7 @@
   <param  name="robot_description" command="$(find xacro)/xacro.py $(find barrett_model)/robots/wam_7dof_wam_bhand.urdf.xacro ctrl_mode:=$(arg ctrl_mode)" />
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
-  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 0.1" respawn="false" output="screen" />
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z -0.2" respawn="false" output="screen" />
 
   <!-- load appropriate arm trajectory controller -->
   <rosparam file="$(find barrett_wam_gazebo)/controller/arm_controller_wam_$(arg ctrl_mode).yaml" ns="wam" command="load"/>

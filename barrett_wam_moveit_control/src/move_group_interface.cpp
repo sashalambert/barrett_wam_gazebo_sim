@@ -2,7 +2,6 @@
 #include <fstream>
 
 #include <moveit/move_group_interface/move_group_interface.h>
-#include <moveit/planning_scene_interface/planning_scene_interface.h>
 
 #include <moveit_msgs/DisplayRobotState.h>
 #include <moveit_msgs/DisplayTrajectory.h>
@@ -11,6 +10,16 @@
 #include <moveit_msgs/CollisionObject.h>
 
 #include <moveit_visual_tools/moveit_visual_tools.h>
+
+// Traj. Parametrization 
+#include <moveit/planning_pipeline/planning_pipeline.h>
+#include <moveit/planning_interface/planning_interface.h>
+#include <moveit/kinematic_constraints/utils.h>
+#include <moveit_msgs/DisplayTrajectory.h>
+#include <moveit_msgs/PlanningScene.h>
+
+#include <moveit/trajectory_processing/iterative_time_parameterization.h>
+
 
 // #define HOME
 #define CARTESIAN
@@ -71,7 +80,6 @@ int main(int argc, char **argv)
   joint_group_positions[0] = 0.0;
   joint_group_positions[1] = -M_PI/2;
   joint_group_positions[2] = 0.0;
-  // joint_group_positions[3] = 0.0; 
   joint_group_positions[3] = M_PI/2; 
   joint_group_positions[4] = 0.0;
   joint_group_positions[5] = 0.0;
@@ -127,9 +135,9 @@ int main(int argc, char **argv)
   waypoints.push_back(current_pose);
 
   //  Read 2D coordinates of trajectory
-  std::string traj_fn = "/home/sasha/catkin_kinetic_ws/src/barrett_wam_gazebo_sim/barrett_wam_moveit_control/scripts/trajectories/cart_path_ellipse_n_100.csv";
+  // std::string traj_fn = "/home/sasha/catkin_kinetic_ws/src/barrett_wam_gazebo_sim/barrett_wam_moveit_control/scripts/trajectories/cart_path_ellipse_n_100.csv";
   // std::string traj_fn = "/home/sasha/catkin_kinetic_ws/src/barrett_wam_gazebo_sim/barrett_wam_moveit_control/scripts/trajectories/cart_path_ellipse_n_200.csv";
-  // std::string traj_fn = "/home/sasha/catkin_kinetic_ws/src/barrett_wam_gazebo_sim/barrett_wam_moveit_control/scripts/trajectories/cart_path_ellipse_n_25.csv";
+  std::string traj_fn = "/home/sasha/catkin_kinetic_ws/src/barrett_wam_gazebo_sim/barrett_wam_moveit_control/scripts/trajectories/cart_path_ellipse_n_25.csv";
   std::vector<std::vector<float>> pos;
   readTrajFile(&pos, traj_fn);
 
@@ -154,44 +162,66 @@ int main(int argc, char **argv)
     }
   }
 
-
   // Cartesian motions are frequently needed to be slower for actions such as approach and retreat
   // grasp motions. Here we demonstrate how to reduce the speed of the robot arm via a scaling factor
   // of the maxiumum speed of each joint. Note this is not the speed of the end effector point.
   
-  // move_group.setMaxVelocityScalingFactor(0.1);
+  move_group.setMaxVelocityScalingFactor(1.0);
 
 
-    // We want the cartesian path to be interpolated at a resolution of 1 cm
+  // We want the cartesian path to be interpolated at a resolution of 1 cm
   // which is why we will specify 0.01 as the max step in cartesian
   // translation.  We will specify the jump threshold as 0.0, effectively disabling it.
   // Warning - disabling the jump threshold while operating real hardware can cause
   // large unpredictable motions of redundant joints and could be a safety issue
-  moveit_msgs::RobotTrajectory trajectory;
+  moveit_msgs::RobotTrajectory trajectory_msg;
 
   // No more than jump_threshold is allowed as change in distance in the configuration space of 
   // the robot (this is to prevent 'jumps' in IK solutions)
   const double jump_threshold = 0.0;
+
   // Step size of at most eef_step meters between end effector configurations of consecutive points.
-  const double eef_step = 0.01;
-  // const double eef_step = 0.1;
-  double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
+  // const double eef_step = 0.01;
+  const double eef_step = 1.0;
+
+  // computeCartesianPath:  Computes velocities and timestamps using ITP -- http://docs.ros.org/kinetic/api/moveit_ros_move_group/html/cartesian__path__service__capability_8cpp_source.html
+  double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory_msg);
   ROS_INFO_NAMED("tutorial", "Visualizing plan (cartesian path) (%.2f%% acheived)", fraction * 100.0);
 
 
-  // Visualize the plan in Rviz
-  visual_tools.deleteAllMarkers();
-  visual_tools.publishPath(waypoints, rvt::LIME_GREEN, rvt::SMALL);
-  for (std::size_t i = 0; i < waypoints.size(); ++i)
-    visual_tools.publishAxisLabeled(waypoints[i], "pt" + std::to_string(i), rvt::SMALL);
-  visual_tools.trigger();
+  // Compute velocities and timestamps using ITP
+
+  // double max_vel_scaling_factor=1.0;
+  // double max_accel_scaling_factor=1.0;
+
+  // robot_model_loader::RobotModelLoader robot_model_loader("robot_description");
+  // robot_model::RobotModelPtr robot_model = robot_model_loader.getModel();
+
+  // robot_trajectory::RobotTrajectory robot_trajectory(robot_model,joint_model_group);
+  // robot_trajectory.setRobotTrajectoryMsg(*move_group.getCurrentState(),trajectory_msg.joint_trajectory);
+
+  // trajectory_processing::IterativeParabolicTimeParameterization itp ;
+  // itp.computeTimeStamps (robot_trajectory,max_vel_scaling_factor,max_accel_scaling_factor);
+
+  // // Visualize the plan in Rviz
+  // visual_tools.deleteAllMarkers();
+  // visual_tools.publishPath(waypoints, rvt::LIME_GREEN, rvt::SMALL);
+  // for (std::size_t i = 0; i < waypoints.size(); ++i)
+  //   visual_tools.publishAxisLabeled(waypoints[i], "pt" + std::to_string(i), rvt::SMALL);
+  // visual_tools.trigger();
+
+  // robot_trajectory.getRobotTrajectoryMsg(trajectory_msg);
+
 
   moveit::planning_interface::MoveGroupInterface::Plan cartesian_plan;
-  cartesian_plan.trajectory_ = trajectory;
+  cartesian_plan.trajectory_ = trajectory_msg;
+
   move_group.execute(cartesian_plan);
   ros::Duration(3.0).sleep();
 
 #endif
+
+
 
 #ifdef RANDOM
 

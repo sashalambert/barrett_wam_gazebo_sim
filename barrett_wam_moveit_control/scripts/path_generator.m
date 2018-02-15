@@ -10,7 +10,7 @@ path='./trajectories';
 
 if strcmp(type,'ellipse') 
  
- n=200;  %num. points   
+ n=25;  %num. points   
     
  x1=-1.0; y1=0;  %major-axis vertices
  x2= 1.0; y2=0;
