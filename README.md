@@ -25,3 +25,18 @@ This includes a manual user-interface for setting start/goal positions of the ro
 ```
 roslaunch barrett_wam_moveit_config moveit_rviz.launch config:=true
 ```
+
+### Trajectory Following Test
+
+Within the `barrett_wam_moveit_control` package, you can generate an elliptical trajectory using the matlab file `scripts/path_generator.m` and making sure to set the appropriate parameters. This will create a `cart_path_ellipse_n_***.csv` under the `trajectories` directory. 
+
+Currently, the .csv file to use for trajectory following can be set in `src/move_group_interface.cpp`.**TO-DO**: read this selection (along with other parameters) from a config file to avoid re-compilation.
+
+You can then run the waypoint-following script through the launch file:
+
+```
+roslaunch barrett_wam_moveit_control moveit_control.launch
+```
+The arm will attempt to move to a pre-set start configuration, and execute the trjaectory.
+
+
