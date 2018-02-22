@@ -9,10 +9,10 @@ git clone --recurse-submodules https://github.com/saszaz/barrett_wam_gazebo_sim
 ```
 To change to the project-relevant branch for this repo:
 
-``
+```
 cd barrett_model
 git checkout --track origin/my_devel
-``
+```
 
 ## Running the code
 
