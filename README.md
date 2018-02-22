@@ -51,6 +51,6 @@ You can then run the waypoint-following script through the launch file:
 ```
 roslaunch barrett_wam_moveit_control moveit_control.launch
 ```
-The arm will attempt to move to a pre-set start configuration, and execute the trjaectory.
+The arm will attempt to move to a pre-set start configuration, and execute the trajectory.
 
 
